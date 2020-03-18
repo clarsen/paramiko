@@ -237,6 +237,7 @@ class SSHClient(ClosingContextManager):
         gss_trust_dns=True,
         passphrase=None,
         disabled_algorithms=None,
+        hexdump=False,
     ):
         """
         Connect to an SSH server and authenticate to it.  The server's host key
@@ -314,6 +315,8 @@ class SSHClient(ClosingContextManager):
         :param dict disabled_algorithms:
             an optional dict passed directly to `.Transport` and its keyword
             argument of the same name.
+        :param bool hexdump:
+            Set hexdump for underlying transport - For debugging
 
         :raises:
             `.BadHostKeyException` -- if the server's host key could not be
@@ -374,6 +377,8 @@ class SSHClient(ClosingContextManager):
             disabled_algorithms=disabled_algorithms,
         )
         t.use_compression(compress=compress)
+        if hexdump:
+            t.set_hexdump(hexdump)
         t.set_gss_host(
             # t.hostname may be None, but GSS-API requires a target name.
             # Therefore use hostname as fallback.
